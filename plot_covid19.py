@@ -1,3 +1,4 @@
+# Authors: Jorge Miranda and Henrique Miranda
 from datetime import datetime, timedelta
 from os import path
 import numpy as np
