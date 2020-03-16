@@ -1,12 +1,13 @@
 # Authors: Jorge Miranda and Henrique Miranda
+
 from datetime import datetime, timedelta
 from os import path
-import numpy as np
-import pandas as pd
+import subprocess
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
+import numpy as np
+import pandas as pd
 from scipy.optimize import curve_fit
-import subprocess
 
 DATA_FILE_PATH = "COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 START_DAYS = -20
@@ -89,8 +90,6 @@ if __name__ == "__main__":
     # plot data
     fig = plt.figure()
 
-    # countries = ['United Kingdom', 'Austria', 'Italy', 'Portugal']
-    # countries = ['Belgium', 'Austria', 'Italy', 'Portugal']
     countries = [
         # ("China", "Hubei"),
         ("Denmark", ""),
