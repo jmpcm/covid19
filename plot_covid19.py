@@ -66,7 +66,7 @@ def update_repository():
         print(output)
 
     print("Pulling repository... ", end="")
-    process = subprocess.Popen(args=["git", "--git-dir=COVID-19/.git", "pull"],
+    process = subprocess.Popen(args=["git", "-C COVID-19", "pull"],
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
     stdout, _ = process.communicate()
