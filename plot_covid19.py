@@ -3,14 +3,36 @@
 from datetime import datetime, timedelta
 from os import path
 import subprocess
+from typing import Tuple
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
+AVG_GROWTH_RATE_POINTS = 2
 DATA_FILE_PATH = "COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 START_DAYS = -20
+
+
+def average_growth_rate(values) -> Tuple[int, int]:
+    """Returns the average growth rate, in units and percentage."""
+    n_points = len(values) - 1
+
+    if n_points < 1:
+        raise ValueError(
+            "The number of points for calculating the average is {}".format(n_points))
+
+    sum_units = 0
+    sum_percentage = 0
+
+    for i in range(n_points):
+        value = values[i + 1] - values[i]
+        sum_units += value
+        sum_percentage += (value / values[i + 1])
+
+    return (sum_units/n_points, round(sum_percentage/n_points * 100, 0))
+
 
 def get_country(name: str, province: str = ""):
     dataframe = dat[dat["Country/Region"] == name]
@@ -91,10 +113,11 @@ if __name__ == "__main__":
     fig = plt.figure()
 
     countries = [
+        # ("Austria", ""),
         # ("China", "Hubei"),
-        ("Denmark", ""),
-        ("Austria", ""),
         ("Italy", ""),
+        ("Denmark", ""),
+        ("Spain", ""),
         ("Portugal", "")
     ]
 
@@ -102,13 +125,21 @@ if __name__ == "__main__":
         x, y = get_data_country(country=country_province[0],
                                 province=country_province[1])
         x_prev, y_prev = get_model(x, y)
+        avg_units, avg_percentage = average_growth_rate(
+            y[-AVG_GROWTH_RATE_POINTS:])
+        print("Average growth rate in the last {} days in {} is {} ({:.0f}%)".format(AVG_GROWTH_RATE_POINTS,
+                                                                                     country_province[0],
+                                                                                     avg_units,
+                                                                                     avg_percentage))
 
         ax = fig.add_subplot(2, 2, i+1)
-        ax.plot(x_prev, y_prev, label="exp(k*(x-x0))", linewidth=1.5, dashes=[6,2])
+        ax.plot(x_prev, y_prev, label="exp(k*(x-x0))",
+                linewidth=1.5, dashes=[6, 2])
         ax.plot(x, y, linewidth=1.5, marker=".")
         for i, txt in enumerate(y):
             if txt > 0:
-                ax.annotate(txt, (x[i], y[i]), fontsize="x-small", rotation="90")
+                ax.annotate(txt, (x[i], y[i]),
+                            fontsize="x-small", rotation="90")
         ax.axvline(0)
 
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
