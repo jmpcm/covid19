@@ -9,7 +9,7 @@ from scipy.optimize import curve_fit
 import subprocess
 
 DATA_FILE_PATH = "COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
-START_DAYS = -40
+START_DAYS = -20
 
 def get_country(name: str, province: str = ""):
     dataframe = dat[dat["Country/Region"] == name]
@@ -92,7 +92,8 @@ if __name__ == "__main__":
     # countries = ['United Kingdom', 'Austria', 'Italy', 'Portugal']
     # countries = ['Belgium', 'Austria', 'Italy', 'Portugal']
     countries = [
-        ("China", "Hubei"),
+        # ("China", "Hubei"),
+        ("Denmark", ""),
         ("Austria", ""),
         ("Italy", ""),
         ("Portugal", "")
@@ -104,8 +105,11 @@ if __name__ == "__main__":
         x_prev, y_prev = get_model(x, y)
 
         ax = fig.add_subplot(2, 2, i+1)
-        ax.plot(x, y)
-        ax.plot(x_prev, y_prev, label='exp(k*(x-x0))')
+        ax.plot(x_prev, y_prev, label="exp(k*(x-x0))", linewidth=1.5, dashes=[6,2])
+        ax.plot(x, y, linewidth=1.5, marker=".")
+        for i, txt in enumerate(y):
+            if txt > 0:
+                ax.annotate(txt, (x[i], y[i]), fontsize="x-small", rotation="90")
         ax.axvline(0)
 
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
