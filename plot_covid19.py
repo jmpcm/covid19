@@ -61,9 +61,11 @@ def get_model(x, y):
     # fit model
     L = 10000
     k = 0.3
-    x0 = 0
+    x0 = -10
     p0 = [k, x0]
-    args, pcov = curve_fit(fit, x, y, p0, maxfev=100000)
+    lbound = [0,-200]
+    ubound = [1,0]
+    args, pcov = curve_fit(fit, x, y, p0, bounds=(lbound,ubound), maxfev=100000)
 
     # compute model
     x_prev = np.linspace(START_DAYS, 7)
