@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
 
-AVG_GROWTH_RATE_POINTS = 2
+AVG_GROWTH_RATE_POINTS = 3
 DATA_FILE_PATH = "COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 START_DAYS = -20
 
@@ -83,17 +83,11 @@ def fit(x, k, x0):
 def update_repository():
     if not path.exists(DATA_FILE_PATH):
         print("Cloning repository... ", end="")
-        process = subprocess.Popen(args=["git", "clone", "https://github.com/CSSEGISandData/COVID-19"],
-                                   stdout=subprocess.PIPE)
-        output = process.communicate()[0]
-        print(output)
+        subprocess.call(args=["git", "clone", "https://github.com/CSSEGISandData/COVID-19"],
+                        stdout=subprocess.PIPE)
 
     print("Pulling repository... ", end="")
-    process = subprocess.Popen(args=["git", "-C COVID-19", "pull"],
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE)
-    stdout, _ = process.communicate()
-    print(stdout.decode("utf-8"))
+    subprocess.call(args=["git", "-C", "COVID-19", "pull"])
 
 
 if __name__ == "__main__":
@@ -116,6 +110,7 @@ if __name__ == "__main__":
         # ("Austria", ""),
         # ("China", "Hubei"),
         ("Italy", ""),
+        # ("Vietnam", ""),
         ("Denmark", ""),
         ("Spain", ""),
         ("Portugal", "")
