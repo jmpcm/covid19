@@ -37,11 +37,11 @@ COUNTRY = 'Spain'
 COUNTRY = 'Netherlands'
 COUNTRY = 'Sweden'
 COUNTRY = 'Belgium'
-COUNTRY = 'Portugal'
-COUNTRY = 'Austria'
 COUNTRY = 'United Kingdom'
-COUNTRY = 'Italy'
+COUNTRY = 'Portugal'
 COUNTRY = 'US'
+COUNTRY = 'Italy'
+COUNTRY = 'Austria'
 
 #compute 1 day difference
 day = timedelta(days=1)
@@ -270,13 +270,13 @@ def make_get_sirx(y0):
         t = np.linspace(min(x),max(x),1000)
         sol = odeint(sirx, y0, t, args=(alpha,beta,k,k0))
         S,I,R,X = sol.T
-        fI = interpolate.interp1d(t, I)
+        fI = interpolate.interp1d(t, I+X)
         return fI(x)
     return get_sirx_confirmed
 
 today = date.today()
 
-plt.title("%s (%s) (startfit:%d)"%(COUNTRY,today.strftime("%m/%d/%Y"),START_FIT))
+plt.title("%s (%s) (startfit:%d)"%(COUNTRY,today.strftime("%d/%m/%Y"),START_FIT))
 x,y = get_data_country(COUNTRY,'Infected')
 plt.plot(x,y,'o-',label='data')
 
@@ -290,8 +290,8 @@ try:
 except:
     pass
 _,sigma = y_prev_max.shape
-for isigma in range(sigma):
-    plt.fill_between(x_prev,y_prev_min[:,isigma],y_prev_max[:,isigma],color='grey',alpha=0.2,linewidth=0)
+#for isigma in range(sigma):
+    #plt.fill_between(x_prev,y_prev_min[:,isigma],y_prev_max[:,isigma],color='grey',alpha=0.2,linewidth=0)
 
 #sirx
 x_prev,y_prev,args,y_prev_min,y_prev_max = get_model_sirx(x,y,COUNTRY)
@@ -303,8 +303,8 @@ try:
 except:
     pass
 _,sigma = y_prev_max.shape
-for isigma in range(sigma):
-    plt.fill_between(x_prev,y_prev_min[:,isigma],y_prev_max[:,isigma],color='grey',alpha=0.2,linewidth=0)
+#for isigma in range(sigma):
+    #plt.fill_between(x_prev,y_prev_min[:,isigma],y_prev_max[:,isigma],color='grey',alpha=0.2,linewidth=0)
 
 plt.axvline(0)
 plt.grid()
