@@ -15,8 +15,8 @@ BETA = 0.38
 R0 = 3.07
 R0_SIRX = 3.07
 R0_SIR = 1.47
-K0 = 0.05
-K  = 0.05
+K0 = 0.01
+K  = 0.01
 
 #consider 10% quarantine (relevant only for SIR-X model)
 PERCENTAGE_QUARANTINE = 0.0
@@ -32,16 +32,18 @@ CSV_PATH = "COVID-19/csse_covid_19_data/csse_covid_19_daily_reports"
 
 # Select contries from this list (othes might work as well)
 COUNTRY = 'Korea, South'
-COUNTRY = 'Germany'
-COUNTRY = 'Spain'
-COUNTRY = 'Netherlands'
-COUNTRY = 'Sweden'
-COUNTRY = 'Belgium'
-COUNTRY = 'United Kingdom'
-COUNTRY = 'Portugal'
 COUNTRY = 'US'
 COUNTRY = 'Italy'
+COUNTRY = 'Brazil'
+COUNTRY = 'Greece'
+COUNTRY = 'Netherlands'
+COUNTRY = 'United Kingdom'
+COUNTRY = 'Germany'
 COUNTRY = 'Austria'
+COUNTRY = 'Portugal'
+COUNTRY = 'Belgium'
+COUNTRY = 'Spain'
+COUNTRY = 'Sweden'
 
 #compute 1 day difference
 day = timedelta(days=1)
@@ -77,7 +79,8 @@ def get_data_country(name,what,start_days=START_DAYS):
     if (what == 'Infected'):
         x,confirmed = get_data_country(name,'Confirmed',start_days=start_days)
         x,recovered = get_data_country(name,'Recovered',start_days=start_days)
-        return x,np.array(confirmed)-np.array(recovered)
+        x,deaths    = get_data_country(name,'Deaths',start_days=start_days)
+        return x,np.array(confirmed)-np.array(recovered)-np.array(deaths)
     x = []
     y = []
     for i in range(start_days,0):
@@ -220,7 +223,7 @@ def get_model_sirx(x,y,country):
     y = y[ix0:]
 
     # Fit
-    args, pcov = curve_fit(get_sirx,x,y,p0,absolute_sigma=True)
+    args, pcov = curve_fit(get_sirx,x,y,p0,absolute_sigma=True,bounds=(lbound,ubound))
     print(('final:  '+'%12.4e '*len(args))%tuple(args))
 
     #compute model
